@@ -220,3 +220,529 @@ body {
         transform: rotate(360deg);
     }
 }
+
+/* ========================================
+   EXPLOSION & CALENDAR ANIMATION STYLES
+======================================== */
+
+/* Main content container for animations */
+.animation-container {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Explosion fragments */
+.explosion-fragment {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+/* Calendar container */
+.calendar-container {
+    width: 100%;
+    background: transparent;
+    border-radius: 20px;
+    opacity: 1;
+    transform: scale(1);
+    will-change: transform, opacity;
+    padding: 2rem;
+}
+
+.calendar-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Calendar grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.calendar-header {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.calendar-nav button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.calendar-nav button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Day cells */
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.calendar-day:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.calendar-day.other-month {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.calendar-day.today {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* Ripple effect */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.4) 0%, transparent 70%);
+    transform: scale(0);
+    pointer-events: none;
+}
+
+.ripple-animate {
+    animation: ripple-expand 0.6s ease-out forwards;
+}
+
+@keyframes ripple-expand {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Day view container */
+.day-view-container {
+    width: 100%;
+    background: transparent;
+    border-radius: 20px;
+    opacity: 1;
+    transform: scale(1);
+    will-change: transform, opacity;
+    padding: 2rem;
+}
+
+.day-view-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.day-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e1e5e9;
+}
+
+.day-view-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Time slots for day view */
+.time-slots {
+    display: grid;
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.time-slot {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.time-slot:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.time-label {
+    font-weight: bold;
+    color: #667eea;
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.time-content {
+    flex: 1;
+    color: #666;
+    font-style: italic;
+}
+
+/* Animation states */
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.exploding {
+    overflow: visible;
+}
+
+/* Particle effects */
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform;
+}
+
+/* ========================================
+   TASK MANAGEMENT & PROGRESS FEATURES
+======================================== */
+
+/* Calendar day headers */
+.calendar-day-header {
+    text-align: center;
+    font-weight: bold;
+    color: #667eea;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Date picker container */
+.date-picker-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.date-picker-container select {
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    padding: 0.5rem;
+    color: #333;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.date-picker-container select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+/* Progress container */
+.progress-container, .day-progress-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.progress-container label {
+    font-weight: 600;
+    color: #333;
+    min-width: 100px;
+}
+
+/* Progress bar styling */
+.progress-bar {
+    flex: 1;
+    height: 12px;
+    background: #e1e5e9;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.progress-text {
+    font-weight: 600;
+    color: #667eea;
+    min-width: 80px;
+    text-align: right;
+}
+
+/* Calendar day enhancements */
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    padding: 0.25rem;
+    min-height: 50px;
+    max-height: 70px;
+}
+
+.day-number {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+}
+
+.task-indicator {
+    font-size: 0.6rem;
+    color: #667eea;
+    font-weight: 500;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 0.05rem 0.2rem;
+    border-radius: 3px;
+    margin-top: 0.1rem;
+}
+
+.day-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
+}
+
+/* Task checkbox styling */
+.task-checkbox {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin-left: 1rem;
+}
+
+.task-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    position: relative;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.checkmark::after {
+    content: '';
+    position: absolute;
+    display: none;
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.task-checkbox input[type="checkbox"]:checked + .checkmark {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+}
+
+.task-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    display: block;
+}
+
+.task-checkbox:hover .checkmark {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Enhanced time slots */
+.time-slot {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 0.75rem;
+}
+
+.time-slot:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.time-label {
+    font-weight: bold;
+    color: #667eea;
+    width: 80px;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.time-content {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #333;
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin: 0 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.time-content:focus {
+    outline: none;
+    background: rgba(102, 126, 234, 0.05);
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.time-content::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Responsive design for calendar */
+@media (max-width: 768px) {
+    .calendar-container {
+        padding: 1rem;
+    }
+
+    .calendar-grid {
+        gap: 0.25rem;
+    }
+
+    .calendar-day {
+        font-size: 0.75rem;
+        min-height: 40px;
+        max-height: 50px;
+        padding: 0.15rem;
+    }
+
+    .day-number {
+        font-size: 0.8rem;
+    }
+
+    .task-indicator {
+        font-size: 0.5rem;
+        padding: 0.05rem 0.15rem;
+    }
+
+    .day-view-container {
+        padding: 1rem;
+    }
+
+    .day-view-title {
+        font-size: 1.5rem;
+    }
+
+    .time-label {
+        width: 60px;
+        font-size: 0.8rem;
+    }
+
+    .time-content {
+        font-size: 0.9rem;
+        margin: 0 0.5rem;
+    }
+
+    .date-picker-container {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .date-picker-container select {
+        padding: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    .progress-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .progress-container label {
+        min-width: auto;
+        text-align: center;
+    }
+}

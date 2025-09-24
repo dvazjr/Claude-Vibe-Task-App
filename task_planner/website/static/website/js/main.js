@@ -267,8 +267,7 @@ class TaskPlannerApp {
 
     let html = `
             <div class="calendar-header">
-                <div class="calendar-nav">
-                    <button id="prev-month">&lt; Previous</button>
+                <div class="calendar-nav" style="display: flex; justify-content: center;">
                     <div class="date-picker-container">
                         <select id="month-picker">
                             ${monthNames
@@ -294,7 +293,6 @@ class TaskPlannerApp {
                               .join("")}
                         </select>
                     </div>
-                    <button id="next-month">Next &gt;</button>
                 </div>
                 <div class="progress-container">
                     <label>Daily Progress:</label>
@@ -350,7 +348,9 @@ class TaskPlannerApp {
 
     html += `
             </div>
-            <button class="back-btn" id="back-to-home">Back to Home</button>
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="back-btn" id="back-to-home">Back to Home</button>
+            </div>
         `;
 
     return html;
@@ -358,16 +358,6 @@ class TaskPlannerApp {
 
   bindCalendarEvents(container) {
     // Month/year navigation
-    container.querySelector("#prev-month").addEventListener("click", () => {
-      this.currentViewDate.setMonth(this.currentViewDate.getMonth() - 1);
-      this.updateCalendar(container);
-    });
-
-    container.querySelector("#next-month").addEventListener("click", () => {
-      this.currentViewDate.setMonth(this.currentViewDate.getMonth() + 1);
-      this.updateCalendar(container);
-    });
-
     container.querySelector("#month-picker").addEventListener("change", (e) => {
       this.currentViewDate.setMonth(parseInt(e.target.value));
       this.updateCalendar(container);
@@ -465,11 +455,83 @@ class TaskPlannerApp {
   }
 
   updateCalendar(container) {
+    // Only update the calendar grid content, not the entire calendar
     const calendarGrid = container.querySelector(".calendar-grid");
-    calendarGrid.innerHTML = this.generateCalendarHTML().match(
-      /<div class="calendar-grid">([\s\S]*)<\/div>/
-    )[1];
-    this.bindCalendarEvents(container);
+    if (calendarGrid) {
+      // Generate just the calendar days
+      const year = this.currentViewDate.getFullYear();
+      const month = this.currentViewDate.getMonth();
+      const today = new Date();
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startingDayOfWeek = firstDay.getDay();
+
+      let html = `
+        <div class="calendar-day-header">Sun</div>
+        <div class="calendar-day-header">Mon</div>
+        <div class="calendar-day-header">Tue</div>
+        <div class="calendar-day-header">Wed</div>
+        <div class="calendar-day-header">Thu</div>
+        <div class="calendar-day-header">Fri</div>
+        <div class="calendar-day-header">Sat</div>
+      `;
+
+      // Add empty cells for days before the first day of the month
+      for (let i = 0; i < startingDayOfWeek; i++) {
+        html += '<div class="calendar-day other-month"></div>';
+      }
+
+      // Add days of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const isToday = date.toDateString() === today.toDateString();
+        const dayTasks = this.getTasksForDate(date);
+        const completedTasks = dayTasks.filter((task) => task.completed).length;
+        const totalTasks = dayTasks.length;
+        const completionPercentage =
+          totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+        html += `
+          <div class="calendar-day ${
+            isToday ? "today" : ""
+          }" data-date="${year}-${month}-${day}">
+              <span class="day-number">${day}</span>
+              ${
+                totalTasks > 0
+                  ? `<div class="task-indicator">${completedTasks}/${totalTasks}</div>`
+                  : ""
+              }
+              ${
+                completionPercentage > 0
+                  ? `<div class="day-progress" style="width: ${completionPercentage}%"></div>`
+                  : ""
+              }
+          </div>
+        `;
+      }
+
+      calendarGrid.innerHTML = html;
+
+      // Update the dropdowns to reflect current date
+      const monthPicker = container.querySelector('#month-picker');
+      const yearPicker = container.querySelector('#year-picker');
+
+      if (monthPicker) monthPicker.value = this.currentViewDate.getMonth();
+      if (yearPicker) yearPicker.value = this.currentViewDate.getFullYear();
+
+      // Rebind only day click events
+      container.querySelectorAll('.calendar-day:not(.other-month)').forEach(day => {
+        day.addEventListener('click', (e) => {
+          this.createRippleEffect(e, day);
+          setTimeout(() => {
+            const dateStr = day.getAttribute('data-date');
+            this.showDayView(dateStr);
+          }, 300);
+        });
+      });
+    }
   }
 
   createRippleEffect(event, element) {

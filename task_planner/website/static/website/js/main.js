@@ -553,8 +553,16 @@ class TaskPlannerApp {
   }
 
   showDayView(dateStr) {
+    console.log('=== SHOW DAY VIEW DEBUG ===');
+    console.log('Date string from calendar:', dateStr);
+
     const [year, month, day] = dateStr.split("-").map(Number);
     const selectedDate = new Date(year, month, day);
+
+    console.log('Parsed date:', selectedDate);
+    console.log('Date key will be:', selectedDate.toDateString());
+    console.log('Current tasks object:', this.tasks);
+    console.log('Tasks for this date:', this.tasks[selectedDate.toDateString()]);
 
     const mainContainer = document.querySelector(".main-container");
 
@@ -620,11 +628,32 @@ class TaskPlannerApp {
             <div class="time-slots">
         `;
 
+    console.log('=== DAY VIEW DEBUG ===');
+    console.log('Date:', date);
+    console.log('Date key:', date.toDateString());
+    console.log('Day tasks:', dayTasks);
+    console.log('Time slots:', timeSlots);
+
     timeSlots.forEach((time) => {
-      const task = dayTasks.find((t) => t.time === time) || {
+      // Flexible time matching - try multiple formats
+      const task = dayTasks.find((t) => {
+        // Direct match
+        if (t.time === time) return true;
+        // With seconds (e.g., "12:00:00" vs "12:00")
+        if (t.time === time + ":00") return true;
+        // Remove seconds from stored time
+        if (t.time && t.time.substring(0, 5) === time) return true;
+        // Without leading zero (e.g., "8:00" vs "08:00")
+        const timeWithoutLeadingZero = time.replace(/^0/, '');
+        if (t.time === timeWithoutLeadingZero || t.time === timeWithoutLeadingZero + ":00") return true;
+        return false;
+      }) || {
         text: "",
         completed: false,
       };
+
+      console.log(`Time slot ${time}: Found task:`, task);
+
       html += `
                 <div class="time-slot">
                     <div class="time-label">${time}</div>
@@ -731,7 +760,9 @@ class TaskPlannerApp {
 
   getTasksForDate(date) {
     const dateKey = date.toDateString();
-    return this.tasks[dateKey] || [];
+    const tasks = this.tasks[dateKey] || [];
+    console.log(`Getting tasks for ${dateKey}:`, tasks);
+    return tasks;
   }
 
   loadTasks() {

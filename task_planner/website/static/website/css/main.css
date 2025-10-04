@@ -222,20 +222,52 @@ body {
 }
 
 /* ========================================
-   EXPLOSION & CALENDAR ANIMATION STYLES
+   ORIGAMI FOLD ANIMATION STYLES
 ======================================== */
 
 /* Main content container for animations */
-.animation-container {
-    position: relative;
-    overflow: hidden;
+.main-container {
+    transform-origin: top;
 }
 
-/* Explosion fragments */
-.explosion-fragment {
-    position: absolute;
-    pointer-events: none;
-    will-change: transform, opacity;
+/* Origami fold animation classes */
+.origami-fold-enter {
+    opacity: 0;
+    transform: scaleY(0);
+    animation: origamiFoldIn 500ms ease-out forwards;
+}
+
+.origami-fold-exit {
+    opacity: 1;
+    transform: scaleY(1);
+    animation: origamiFoldOut 500ms ease-in forwards;
+}
+
+.origami-fold-active {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+@keyframes origamiFoldIn {
+    0% {
+        opacity: 0;
+        transform: scaleY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+}
+
+@keyframes origamiFoldOut {
+    0% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scaleY(0);
+    }
 }
 
 /* Calendar container */
@@ -633,6 +665,22 @@ body {
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+.task-checkbox input[type="checkbox"]:disabled + .checkmark {
+    background: #f5f5f5;
+    border-color: #ddd;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.task-checkbox:has(input[type="checkbox"]:disabled) {
+    cursor: not-allowed;
+}
+
+.task-checkbox:has(input[type="checkbox"]:disabled):hover .checkmark {
+    border-color: #ddd;
+    box-shadow: none;
+}
+
 /* Enhanced time slots */
 .time-slot {
     display: flex;
@@ -744,5 +792,187 @@ body {
     .progress-container label {
         min-width: auto;
         text-align: center;
+    }
+}
+
+/* ========================================
+   TASKS LIST VIEW STYLES
+======================================== */
+
+.tasks-list-container {
+    width: 100%;
+    background: transparent;
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.tasks-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e1e5e9;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.tasks-list-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid #e1e5e9;
+    color: #667eea;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.filter-btn:hover {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+}
+
+.tasks-list-content {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.date-section {
+    margin-bottom: 2rem;
+}
+
+.date-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.tasks-for-date {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.task-list-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    gap: 1rem;
+}
+
+.task-list-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.task-list-item.task-completed {
+    background: #f5f5f5;
+    opacity: 0.6;
+}
+
+.task-list-item.task-completed .task-text {
+    color: #999;
+}
+
+.task-time-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    min-width: 80px;
+    text-align: center;
+}
+
+.task-list-item.task-completed .task-time-badge {
+    background: #999;
+}
+
+.task-text {
+    flex: 1;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.task-status {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+.task-list-item:not(.task-completed) .task-status {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.task-list-item.task-completed .task-status {
+    color: #4caf50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.no-tasks-message {
+    text-align: center;
+    padding: 4rem 2rem;
+    font-size: 1.2rem;
+    color: #999;
+}
+
+/* Responsive styles for tasks list */
+@media (max-width: 768px) {
+    .tasks-list-container {
+        padding: 1rem;
+    }
+
+    .tasks-list-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tasks-list-title {
+        font-size: 1.5rem;
+    }
+
+    .filter-buttons {
+        justify-content: center;
+    }
+
+    .task-list-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .task-time-badge {
+        min-width: auto;
     }
 }
